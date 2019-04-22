@@ -40,6 +40,6 @@ def Lang(vocab, sent_in):
 
 def getVocab():
     vocab = Vocab()
-    sent_in, sent_out = preprocess("dataset/micro/train.txt", 10)
+    sent_in, sent_out = preprocess("dataset/micro/train.txt")
     vocab = Lang(vocab, sent_in)
     return vocab

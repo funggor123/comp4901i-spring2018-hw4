@@ -25,6 +25,7 @@ class Dataset(data.Dataset):
         X = self.tokenize(self.X[index])
         if (self.y is not None):
             y = self.tokenize(self.y[index])
+            print(len(torch.LongTensor(X)), len(torch.LongTensor(y)))
             return torch.LongTensor(X), torch.LongTensor(y)
         else:
             return torch.LongTensor(X)
@@ -35,11 +36,11 @@ class Dataset(data.Dataset):
     def tokenize(self, sentence):
         return [self.vocab.word2index[word] if word in self.vocab.word2index else UNK_INDEX for word in sentence]
 
-def get_dataloaders(batch_size):
+def get_dataloaders(batch_size, max_len):
     vocab = getVocab()
-    train_data_sent_in, train_data_sent_out = preprocess("dataset/micro/train.txt", 10)
-    dev_data_sent_in, dev_data_sent_out = preprocess("dataset/micro/valid.txt",10)
-    test_data_sent_in , test_data_sent_out= preprocess("dataset/micro/test.txt",10)
+    train_data_sent_in, train_data_sent_out = preprocess("dataset/micro/train.txt", windows=max_len)
+    dev_data_sent_in, dev_data_sent_out = preprocess("dataset/micro/valid.txt", windows=max_len)
+    test_data_sent_in, test_data_sent_out= preprocess("dataset/micro/test.txt", test= True, windows=max_len)
     train = Dataset(train_data_sent_in, train_data_sent_out, vocab)
     dev = Dataset(dev_data_sent_in, dev_data_sent_out, vocab)
     test = Dataset(test_data_sent_in , test_data_sent_out,vocab)
@@ -52,6 +53,6 @@ def get_dataloaders(batch_size):
     data_loader_test = torch.utils.data.DataLoader(dataset=test,
                                                        batch_size=batch_size,
                                                        shuffle=False)
-    return data_loader_tr, data_loader_dev, data_loader_test
+    return data_loader_tr, data_loader_dev, data_loader_test, len(vocab.word2index)
 
-data_loader_tr, data_loader_dev, data_loader_test = get_dataloaders(16)
+#data_loader_tr, data_loader_dev, data_loader_test = get_dataloaders(16)
