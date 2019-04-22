@@ -11,11 +11,10 @@ wnl = WordNetLemmatizer()
 
 
 def clean(string):
-    lower_string(string)
-    expand_contradiction(string)
-    clean_sp_char(string)
-
-    print(0)
+    string = lower_string(string)
+    string = expand_contradiction(string)
+    string = clean_sp_char(string)
+    return stem_and_lemmati(string)
 
 
 def stem_and_lemmati(string):
@@ -26,6 +25,7 @@ def stem_and_lemmati(string):
 
 def lower_string(string):
     return string.lower()
+
 
 def stop_word_filtering(string):
     return
