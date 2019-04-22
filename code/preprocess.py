@@ -32,6 +32,7 @@ def lower_string(string):
 def stop_word_filtering(string):
     return
 
+
 def expand_contradiction(string):
     # Expand the Contradiction
 
@@ -178,14 +179,13 @@ contractions_dict = {
 }
 
 
+def clean_sp_char(string):
+    return re.sub(r"[^A-Za-z]", " ", string)
+
+
 def count_time_start():
     start_time = time.time()
     return start_time
-
-
-def clean_str(string):
-    return re.sub(r"[^A-Za-z]", " ", string)
-
 
 def count_time_end(start_time, task_str):
     elapsed_time = time.time() - start_time
@@ -193,39 +193,26 @@ def count_time_end(start_time, task_str):
 
 
 def preprocess(input_file, windows=200, test=False):
+    x = []
+    y = []
     with open(input_file, "r") as f:
         start_time = count_time_start()
         data = f.read()
         data = clean_str(data)
-        count_time_end(start_time, "loading_file")
-        start_time = count_time_start()
-
         data = data.split()
-
-        sent_in = ["<Start>"]
-        sent_out = []
-
-        total_sent_in = []
-        total_sent_out = []
-
-        wind_counts = 0
+        count_time_end(start_time,"load files")
+        start_time = count_time_start()
+        batch = []
         for word in data:
-            if wind_counts == windows-1:
-                sent_out += ["<End>"]
-                total_sent_in += [sent_in]
-                total_sent_out += [sent_out]
-                sent_in = []
-                sent_out = []
-                sent_in += ["<Start>"]
-                wind_counts = 0
-            wind_counts +=1
-            sent_in += [word]
-            sent_out += [word]
+            if len(batch) == windows - 1:
+                x += [["<Start>"] + batch]
+                y += [batch + ["<End>"]]
+                batch = []
+            batch += [word]
         count_time_end(start_time, "tokenize")
         if test:
-            return total_sent_in, None
+            return x, None
         else:
-            assert len(total_sent_in) == len(total_sent_out)
-            return total_sent_in, total_sent_out
+            assert len(x) == len(y)
+            return x, y
 
-sents_in, sents_out = preprocess("./dataset/micro/train.txt", 5)
