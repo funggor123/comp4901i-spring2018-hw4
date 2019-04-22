@@ -231,7 +231,7 @@ def preprocess(input_file, max_seq_length=200, test=False):
             return sent_in, None
         else:
             assert len(sent_in) == len(sent_out)
+            #print("Hi", sent_in, sent_out)
             return sent_in, sent_out
-
 
 sent_in, sent_out = preprocess("./dataset/micro/train.txt", 40)
