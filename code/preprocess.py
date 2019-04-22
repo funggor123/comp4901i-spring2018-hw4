@@ -213,9 +213,11 @@ def preprocess(input_file, seq_length):
         clean_sent = []
         for sent in sentences:
             sent = sent.strip().split()
-            clean_sent += [["<START>"] + sent[:seq_length - 2] + ["<END>"]]
-            break
-        print(clean_sent[0])
+            sen_len = len(sent)
+            if sen_len < seq_length-2:
+                clean_sent += [["<START>"] + sent[:sen_len] + ["<END>"]]
+            else:
+                clean_sent += [["<START>"] + sent[:seq_length-2] + ["<END>"]]
 
 
 preprocess("dataset/micro/train.txt", 10)
