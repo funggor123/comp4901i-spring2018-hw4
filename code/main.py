@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 import torch
 import torch.nn as nn
-
+from dataloader import get_dataloaders
 from sklearn.metrics import classification_report, accuracy_score
 
 from RNN import RNNLM
@@ -18,18 +18,13 @@ def trainer(train_loader,dev_loader, model, optimizer, criterion, epoch=1000, ea
     for e in range(epoch):
         loss_log = []
         model.train()
-        pbar = tqdm(enumerate(train_loader),total=len(train_loader))
+        pbar = tqdm(enumerate(train_loader), total=len(train_loader))
         ######
         if use_gpu:
             model = model.cuda()
         #####
         for i, (seq_in, target) in pbar:
-            ############################################
-            #TO DO
-            #write a trainer to train your CNN model
-            #evaluate your model on development set every epoch
-            #you are expected to achieve between 0.50 to 0.70 accuracy on development set
-            ############################################
+
             # use gpu for training
             if use_gpu:
                 seq_in = seq_in.cuda()
@@ -37,8 +32,7 @@ def trainer(train_loader,dev_loader, model, optimizer, criterion, epoch=1000, ea
 
             optimizer.zero_grad()
             outputs = model(seq_in)
-
-            loss = criterion(outputs, target)
+            loss = criterion(outputs.view(-1, outputs.shape[2]), target.view(-1))
             loss.backward()
             optimizer.step()
 
@@ -110,14 +104,13 @@ def main():
     parser.add_argument("--dim_size", type=int, default=128)
     parser.add_argument("--num_layers", type=int, default=1)
     parser.add_argument("--max_len", type=int, default=200)
-    parser.add_argument("--window_size", type=int, default=16)
     parser.add_argument("--lr_decay", type=float, default=0.5)
     args = parser.parse_args()
     #load data
     train_loader, dev_loader, test_loader, vocab_size = get_dataloaders(args.batch_size, args.max_len)
     #build model
     # try to use pretrained embedding here
-    model = RNNLM(args, vocab_size, embedding_matrix=None)
+    model = RNNLM(args, vocab_size, target_size=vocab_size, embedding_matrix=None)
     #loss function
     criterion = nn.CrossEntropyLoss()
     #choose optimizer
