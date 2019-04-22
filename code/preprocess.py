@@ -187,6 +187,7 @@ def count_time_start():
     start_time = time.time()
     return start_time
 
+
 def count_time_end(start_time, task_str):
     elapsed_time = time.time() - start_time
     print(elapsed_time, "seconds " + task_str)
@@ -200,7 +201,7 @@ def preprocess(input_file, windows=200, test=False):
         data = f.read()
         data = clean_str(data)
         data = data.split()
-        count_time_end(start_time,"load files")
+        count_time_end(start_time, "load files")
         start_time = count_time_start()
         batch = []
         for word in data:
@@ -215,4 +216,3 @@ def preprocess(input_file, windows=200, test=False):
         else:
             assert len(x) == len(y)
             return x, y
-
