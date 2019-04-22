@@ -197,6 +197,7 @@ def count_time_start():
     start_time = time.time()
     return start_time
 
+
 def clean_sentence(string):
     return re.sub(r"[^A-Za-z]", " ", string)
 
@@ -206,23 +207,31 @@ def count_time_end(start_time, task_str):
     print(elapsed_time, task_str)
 
 
-def preprocess(input_file, seq_length):
+def preprocess(input_file, seq_length, test=False):
     with open(input_file, "r") as f:
         start_time = count_time_start()
         data = f.read()
-        # text cleaning or make them lower case, etc.
         data = clean(data)
         count_time_end(start_time, "loading_file")
         sentences = re.split(r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=[.?;!])\s", data)
-        clean_sent = []
+        sent_in = []
+        sent_out = []
         for sent in sentences:
             sent = clean_sentence(sent).strip().split()
             sen_len = len(sent)
-            if sen_len < seq_length-2:
-                clean_sent += [["<START>"] + sent[:sen_len] + ["<END>"]]
+            if sen_len < seq_length - 1:
+                sent_in += [["<START>"] + sent[:sen_len]]
+                sent_out += [[sent[:sen_len] + ["<END>"]]]
             else:
-                clean_sent += [["<START>"] + sent[:seq_length-2] + ["<END>"]]
-        print(clean_sent[2])
+                sent_in += [["<START>"] + sent[:seq_length - 1]]
+                sent_out += [[sent[:seq_length - 1] + ["<END>"]]]
+        if test:
+            return sent_in, None
+        else:
+            assert len(sent_in) == len(sent_out)
+            return sent_in, sent_out
 
 
-preprocess("dataset/micro/train.txt", 10)
+sent_in, sent_out = preprocess("dataset/micro/train.txt", 10)
+print(sent_in[0])
+print(sent_out[0])
