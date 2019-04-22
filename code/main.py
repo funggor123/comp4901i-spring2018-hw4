@@ -121,7 +121,7 @@ def main():
     #loss function
     criterion = nn.CrossEntropyLoss()
     #choose optimizer
-    optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad,model.parameters()), lr=args.lr)
+    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad,model.parameters()), lr=args.lr)
 
     #scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=args.lr_decay)
     model, best_acc = trainer(train_loader, dev_loader, model, optimizer, criterion, early_stop = args.early_stop)
