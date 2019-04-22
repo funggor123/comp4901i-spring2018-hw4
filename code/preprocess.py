@@ -221,10 +221,10 @@ def preprocess(input_file, seq_length, test=False):
             sen_len = len(sent)
             if sen_len < seq_length - 1:
                 sent_in += [["<START>"] + sent[:sen_len]]
-                sent_out += [[sent[:sen_len] + ["<END>"]]]
+                sent_out += [sent[:sen_len] + ["<END>"]]
             else:
                 sent_in += [["<START>"] + sent[:seq_length - 1]]
-                sent_out += [[sent[:seq_length - 1] + ["<END>"]]]
+                sent_out += [sent[:seq_length - 1] + ["<END>"]]
         if test:
             return sent_in, None
         else:
@@ -233,5 +233,4 @@ def preprocess(input_file, seq_length, test=False):
 
 
 sent_in, sent_out = preprocess("dataset/micro/train.txt", 10)
-print(sent_in[0])
-print(sent_out[0])
+
