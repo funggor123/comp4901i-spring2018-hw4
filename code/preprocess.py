@@ -12,7 +12,7 @@ sno = SnowballStemmer('english')
 wnl = WordNetLemmatizer()
 
 
-def clean(string):
+def clean_str(string):
     string = lower_string(string)
     string = expand_contradiction(string)
     string = clean_sp_char(string)
@@ -204,27 +204,29 @@ def clean_sentence(string):
 
 def count_time_end(start_time, task_str):
     elapsed_time = time.time() - start_time
-    print(elapsed_time, task_str)
+    print(elapsed_time, "seconds " + task_str)
 
 
-def preprocess(input_file, seq_length, test=False):
+def preprocess(input_file, max_seq_length=200, test=False):
     with open(input_file, "r") as f:
         start_time = count_time_start()
         data = f.read()
-        data = clean(data)
+        data = clean_str(data)
         count_time_end(start_time, "loading_file")
+        start_time = count_time_start()
         sentences = re.split(r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=[.?;!])\s", data)
         sent_in = []
         sent_out = []
         for sent in sentences:
             sent = clean_sentence(sent).strip().split()
             sen_len = len(sent)
-            if sen_len < seq_length - 1:
+            if sen_len < max_seq_length - 1:
                 sent_in += [["<START>"] + sent[:sen_len]]
                 sent_out += [sent[:sen_len] + ["<END>"]]
             else:
-                sent_in += [["<START>"] + sent[:seq_length - 1]]
-                sent_out += [sent[:seq_length - 1] + ["<END>"]]
+                sent_in += [["<START>"] + sent[:max_seq_length - 1]]
+                sent_out += [sent[:max_seq_length - 1] + ["<END>"]]
+        count_time_end(start_time, "tokenize")
         if test:
             return sent_in, None
         else:
@@ -232,3 +234,4 @@ def preprocess(input_file, seq_length, test=False):
             return sent_in, sent_out
 
 
+sent_in, sent_out = preprocess("./dataset/micro/train.txt", 40)
