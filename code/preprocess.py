@@ -26,7 +26,7 @@ def stem_and_lemmati(string):
 
 
 def lower_string(string):
-    return string.lower()
+    return string.strip().lower()
 
 
 def stop_word_filtering(string):
@@ -37,12 +37,13 @@ def clean_sp_char(string):
     ## Clean All Special Characters
     string = re.sub(r"\[([^\]]+)\]", " ", string)
     string = re.sub(r"\(([^\)]+)\)", " ", string)
-    string = re.sub(r"[^A-Za-z0-9,!?.;]", " ", string)
+    string = re.sub(r"[^A-Za-z,!?.;]", " ", string)
     string = re.sub(r",", " , ", string)
     string = re.sub(r"!", " ! ", string)
     string = re.sub(r"\?", " ? ", string)
     string = re.sub(r";", " ; ", string)
     string = re.sub(r"\s{2,}", " ", string)
+    string = re.compile('[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]').sub('', string)
     return string
 
 
@@ -196,6 +197,9 @@ def count_time_start():
     start_time = time.time()
     return start_time
 
+def clean_sentence(string):
+    return re.sub(r"[^A-Za-z]", " ", string)
+
 
 def count_time_end(start_time, task_str):
     elapsed_time = time.time() - start_time
@@ -212,12 +216,13 @@ def preprocess(input_file, seq_length):
         sentences = re.split(r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=[.?;!])\s", data)
         clean_sent = []
         for sent in sentences:
-            sent = sent.strip().split()
+            sent = clean_sentence(sent).strip().split()
             sen_len = len(sent)
             if sen_len < seq_length-2:
                 clean_sent += [["<START>"] + sent[:sen_len] + ["<END>"]]
             else:
                 clean_sent += [["<START>"] + sent[:seq_length-2] + ["<END>"]]
+        print(clean_sent[2])
 
 
 preprocess("dataset/micro/train.txt", 10)
