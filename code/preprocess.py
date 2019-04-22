@@ -1,14 +1,13 @@
 import re
 import nltk
 from nltk.corpus import stopwords
-from nltk.stem.snowball import SnowballStemmer
+from nltk.stem.snowball import PorterStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
-from nltk.tokenize import sent_tokenize
 import time
 
 nltk.download('stopwords')
 stop = stopwords.words('english')
-sno = SnowballStemmer('english')
+sno = PorterStemmer()
 wnl = WordNetLemmatizer()
 
 
@@ -19,23 +18,24 @@ def clean_str(string):
     return string
 
 
-def stem_and_lemmati(string):
-    string = sno.stem(string).encode('utf8')
-    string = wnl.lemmatize(string)
-    return string
+def stem_and_lemma(data):
+    # stem is too slow
+    # data = [sno.stem(w) for w in data]
+    data = [wnl.lemmatize(w) for w in data]
+    return data
 
 
 def lower_string(string):
     return string.strip().lower()
 
 
-def stop_word_filtering(string):
-    return
+def stop_word_filtering(data):
+    data = [w for w in data if not w in stop]
+    return data
 
 
 def expand_contradiction(string):
     # Expand the Contradiction
-
     contractions_re = re.compile('(%s)' % '|'.join(contractions_dict.keys()))
 
     def expand_contractions(s, contractions_dict=contractions_dict):
@@ -199,9 +199,15 @@ def preprocess(input_file, windows=200, test=False):
     with open(input_file, "r") as f:
         start_time = count_time_start()
         data = f.read()
+        count_time_end(start_time, "load files")
+        start_time = count_time_start()
         data = clean_str(data)
         data = data.split()
-        count_time_end(start_time, "load files")
+        # Bad Effect when filtering stop words
+        # data = stop_word_filtering(data)
+        # Stemming and lemmatize is slow
+        # data = stem_and_lemma(data)
+        count_time_end(start_time, "clean dataset")
         start_time = count_time_start()
         batch = []
         for word in data:
@@ -210,9 +216,15 @@ def preprocess(input_file, windows=200, test=False):
                 y += [batch + ["<End>"]]
                 batch = []
             batch += [word]
-        count_time_end(start_time, "tokenize")
+        count_time_end(start_time, "Add Sequence")
         if test:
             return x, None
         else:
             assert len(x) == len(y)
             return x, y
+
+
+# Testing
+# x, y = preprocess("./dataset/micro/train.txt", windows=20, test=False)
+# print(x[1])
+# print(y[1])

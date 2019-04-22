@@ -1,14 +1,11 @@
 import pandas as pd
-import re
-import numpy as np
-import pickle
-import unicodedata
 import torch
 import torch.utils.data as data
-import collections
 from statistics import getVocab
 from preprocess import preprocess
+
 UNK_INDEX = 0
+
 
 class Dataset(data.Dataset):
     """Custom data.Dataset compatible with data.DataLoader."""
@@ -18,7 +15,7 @@ class Dataset(data.Dataset):
         self.y = sent_out
         self.vocab = vocab
         self.num_total_seqs = len(self.X)
-        #if (self.y is not None): self.y = torch.LongTensor(self.y)
+        # if (self.y is not None): self.y = torch.LongTensor(self.y)
 
     def __getitem__(self, index):
         """Returns one data pair (source and target)."""
@@ -35,23 +32,24 @@ class Dataset(data.Dataset):
     def tokenize(self, sentence):
         return [self.vocab.word2index[word] if word in self.vocab.word2index else UNK_INDEX for word in sentence]
 
+
 def get_dataloaders(batch_size, max_len):
     vocab = getVocab()
     train_data_sent_in, train_data_sent_out = preprocess("dataset/micro/train.txt", windows=max_len)
     dev_data_sent_in, dev_data_sent_out = preprocess("dataset/micro/valid.txt", windows=max_len)
-    test_data_sent_in, test_data_sent_out= preprocess("dataset/micro/test.txt", test= True, windows=max_len)
+    test_data_sent_in, test_data_sent_out = preprocess("dataset/micro/test.txt", test=True, windows=max_len)
     train = Dataset(train_data_sent_in, train_data_sent_out, vocab)
     dev = Dataset(dev_data_sent_in, dev_data_sent_out, vocab)
-    test = Dataset(test_data_sent_in , test_data_sent_out,vocab)
+    test = Dataset(test_data_sent_in, test_data_sent_out, vocab)
     data_loader_tr = torch.utils.data.DataLoader(dataset=train,
-                                                     batch_size=batch_size,
-                                                     shuffle=True)
+                                                 batch_size=batch_size,
+                                                 shuffle=True)
     data_loader_dev = torch.utils.data.DataLoader(dataset=dev,
-                                                      batch_size=batch_size,
-                                                      shuffle=False)
+                                                  batch_size=batch_size,
+                                                  shuffle=False)
     data_loader_test = torch.utils.data.DataLoader(dataset=test,
-                                                       batch_size=batch_size,
-                                                       shuffle=False)
+                                                   batch_size=batch_size,
+                                                   shuffle=False)
     return data_loader_tr, data_loader_dev, data_loader_test, len(vocab.word2index)
 
-#data_loader_tr, data_loader_dev, data_loader_test = get_dataloaders(16)
+# data_loader_tr, data_loader_dev, data_loader_test = get_dataloaders(16)
