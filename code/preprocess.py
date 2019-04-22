@@ -232,5 +232,3 @@ def preprocess(input_file, seq_length, test=False):
             return sent_in, sent_out
 
 
-sent_in, sent_out = preprocess("dataset/micro/train.txt", 10)
-
