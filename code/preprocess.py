@@ -210,7 +210,7 @@ def preprocess(input_file, windows=200, test=False):
 
         wind_counts = 0
         for word in data:
-            if wind_counts == windows:
+            if wind_counts == windows-1:
                 sent_out += ["<End>"]
                 total_sent_in += [sent_in]
                 total_sent_out += [sent_out]
