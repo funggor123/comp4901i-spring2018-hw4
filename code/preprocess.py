@@ -32,21 +32,6 @@ def lower_string(string):
 def stop_word_filtering(string):
     return
 
-
-def clean_sp_char(string):
-    ## Clean All Special Characters
-    string = re.sub(r"\[([^\]]+)\]", " ", string)
-    string = re.sub(r"\(([^\)]+)\)", " ", string)
-    string = re.sub(r"[^A-Za-z,!?.;]", " ", string)
-    string = re.sub(r",", " , ", string)
-    string = re.sub(r"!", " ! ", string)
-    string = re.sub(r"\?", " ? ", string)
-    string = re.sub(r";", " ; ", string)
-    string = re.sub(r"\s{2,}", " ", string)
-    string = re.compile('[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]').sub('', string)
-    return string
-
-
 def expand_contradiction(string):
     # Expand the Contradiction
 
@@ -198,7 +183,7 @@ def count_time_start():
     return start_time
 
 
-def clean_sentence(string):
+def clean_str(string):
     return re.sub(r"[^A-Za-z]", " ", string)
 
 
@@ -207,31 +192,40 @@ def count_time_end(start_time, task_str):
     print(elapsed_time, "seconds " + task_str)
 
 
-def preprocess(input_file, max_seq_length=200, test=False):
+def preprocess(input_file, windows=200, test=False):
     with open(input_file, "r") as f:
         start_time = count_time_start()
         data = f.read()
         data = clean_str(data)
         count_time_end(start_time, "loading_file")
         start_time = count_time_start()
-        sentences = re.split(r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=[.?;!])\s", data)
-        sent_in = []
+
+        data = data.split()
+
+        sent_in = ["<Start>"]
         sent_out = []
-        for sent in sentences:
-            sent = clean_sentence(sent).strip().split()
-            sen_len = len(sent)
-            if sen_len < max_seq_length - 1:
-                sent_in += [["<START>"] + sent[:sen_len]]
-                sent_out += [sent[:sen_len] + ["<END>"]]
-            else:
-                sent_in += [["<START>"] + sent[:max_seq_length - 1]]
-                sent_out += [sent[:max_seq_length - 1] + ["<END>"]]
+
+        total_sent_in = []
+        total_sent_out = []
+
+        wind_counts = 0
+        for word in data:
+            if wind_counts == windows-1:
+                sent_out += ["<End>"]
+                total_sent_in += [sent_in]
+                total_sent_out += [sent_out]
+                sent_in = []
+                sent_out = []
+                sent_in += ["<Start>"]
+                wind_counts = 0
+            wind_counts +=1
+            sent_in += [word]
+            sent_out += [word]
         count_time_end(start_time, "tokenize")
         if test:
-            return sent_in, None
+            return total_sent_in, None
         else:
-            assert len(sent_in) == len(sent_out)
-            #print("Hi", sent_in, sent_out)
-            return sent_in, sent_out
+            assert len(total_sent_in) == len(total_sent_out)
+            return total_sent_in, total_sent_out
 
-sent_in, sent_out = preprocess("./dataset/micro/train.txt", 40)
+sents_in, sents_out = preprocess("./dataset/micro/train.txt", 5)
