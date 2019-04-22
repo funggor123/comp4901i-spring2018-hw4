@@ -228,5 +228,4 @@ def preprocess(input_file, windows=200, test=False):
             assert len(total_sent_in) == len(total_sent_out)
             return total_sent_in, total_sent_out
 
-
 sents_in, sents_out = preprocess("./dataset/micro/train.txt", 5)
