@@ -61,14 +61,14 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, e
         # report = classification_report(ys, preds, digits=3,
         #                             target_names=label_names)
         perp = np.exp(np.mean(loss_log))
-        if perp > best_perp:
+        if perp < best_perp:
             best_perp = perp
         else:
             early_stop -= 1
         # print("current validation report")
         # print("\n{}\n".format(report))
         # print()
-        print("epcoh: {}, best perplexity:{} perplexity:{}".format(e + 1, acc, best_perp, perp))
+        print("epcoh: {}, best perplexity:{} perplexity:{}".format(e + 1, best_perp, perp))
 
         if early_stop == 0:
             break

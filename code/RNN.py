@@ -11,7 +11,7 @@ class RNNLM(nn.Module):
 
     def forward(self, x, hidden=None):
         ebd = self.embedding(x)
-        if h is not None:
+        if hidden is not None:
             out, hidden = self.rnn(ebd)
         else:
             out, hidden = self.rnn(ebd, hidden)
