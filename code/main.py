@@ -31,7 +31,7 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, e
                 target = target.cuda()
 
             optimizer.zero_grad()
-            outputs = model(seq_in)
+            outputs, hidden = model(seq_in)
             loss = criterion(outputs, target.reshape(-1))
             loss.backward()
             optimizer.step()
@@ -48,7 +48,7 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, e
                 seq_in = seq_in.cuda()
                 target = target.cuda()
             #######
-            logit = model(seq_in)
+            logit, hidden = model(seq_in)
             logits.append(logit.data.cpu().numpy())
             ys.append(target.data.cpu().numpy())
         logits = np.concatenate(logits, axis=0)
@@ -74,42 +74,37 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, e
     return model, best_acc
 
 
-def predict(model, test_loader, save_file="submission.csv"):
-    logits = []
-    inds = []
+def predict(model, vocab, start_vocab):
     model.eval()
-    for X, ind in test_loader:
+    input = torch.LongTensor(vocab.word2index(start_vocab)).reshape(1, 1, 1)
+    word = ""
+    hidden = None
+    while word != "<End>":
         ###
         if use_gpu:
-            X = X.cuda()
+            input = input.cuda()
         ###
-        logit = model(X)
-        logits.append(logit.data.cpu().numpy())
-        inds.append(ind.data.cpu().numpy())
-    logits = np.concatenate(logits, axis=0)
-    inds = np.concatenate(inds, axis=0)
-    preds = np.argmax(logits, axis=1)
-    result = {'id': list(inds), "rating": preds}
-    df = pd.DataFrame(result, index=result['id'])
-    df.to_csv(save_file)
-
+        output, hidden = model(input, hidden)
+        word_id = torch.multinomial(output, num_samples=1).item().cuda()
+        input = word_id.reshape(1, 1, 1)
+        word = vocab.index2word(word_id.cpu().numpy())
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--lr", type=float, default=0.0001)
     parser.add_argument("--dropout", type=float, default=0.3)
-    parser.add_argument("--batch_size", type=int, default=8)
+    parser.add_argument("--batch_size", type=int, default=20)
     parser.add_argument("--early_stop", type=int, default=10)
-    parser.add_argument("--embed_dim", type=int, default=150)
+    parser.add_argument("--embed_dim", type=int, default=128)
     parser.add_argument("--dim_size", type=int, default=256)
     parser.add_argument("--num_layers", type=int, default=2)
-    parser.add_argument("--window_size", type=int, default=50)
+    parser.add_argument("--window_size", type=int, default=30)
     parser.add_argument("--lr_decay", type=float, default=0.5)
     args = parser.parse_args()
 
     # load data
-    train_loader, dev_loader, test_loader, vocab_size = get_dataloaders(args.batch_size, args.window_size)
+    train_loader, dev_loader, test_loader, vocab_size, vocab = get_dataloaders(args.batch_size, args.window_size)
 
     # build model
     # try to use pretrained embedding here
@@ -125,7 +120,7 @@ def main():
     model, best_acc = trainer(train_loader, dev_loader, model, optimizer, criterion, early_stop=args.early_stop)
 
     print('best_dev_acc:{}'.format(best_acc))
-    predict(model, test_loader)
+    predict(model, vocab, "The")
 
 
 if __name__ == "__main__":

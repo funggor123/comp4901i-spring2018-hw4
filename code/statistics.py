@@ -56,7 +56,7 @@ def getVocab():
     sent_in, sent_out = preprocess("dataset/micro/train.txt")
     statistic, vocab = Lang(vocab, sent_in)
     print(statistic)
-    return vocab
+    return vocab, vocab
 
 
 # Testing
