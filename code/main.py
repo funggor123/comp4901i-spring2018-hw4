@@ -113,7 +113,7 @@ def main():
 
     # build model
     # try to use pretrained embedding here
-    model = RNNLM(args, vocab_size, target_size=vocab_size, embedding_matrix=None)
+    model = RNNLM(args, vocab_size, embedding_matrix=None)
 
     # loss function
     criterion = nn.CrossEntropyLoss()
