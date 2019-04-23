@@ -40,7 +40,6 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, e
             pbar.set_description("(Epoch {}) TRAIN LOSS:{:.4f}".format((e + 1), np.mean(loss_log)))
 
         model.eval()
-        # logits = []
         loss_log = []
         for seq_in, target in dev_loader:
             ##########
@@ -51,23 +50,11 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, e
             outputs, hidden = model(seq_in)
             loss = criterion(outputs, target.reshape(-1))
             loss_log.append(loss.item())
-            # logits.append(logit.data.cpu().numpy())
-            # ys.append(target.data.cpu().numpy())
-        # logits = np.concatenate(logits, axis=0)
-        # preds = np.argmax(logits, axis=1)
-        # ys = np.concatenate(ys, axis=0)
-        # acc = accuracy_score(y_true=ys, y_pred=preds)
-        # label_names = ['rating 0', 'rating 1','rating 2']
-        # report = classification_report(ys, preds, digits=3,
-        #                             target_names=label_names)
         perp = np.exp(np.mean(loss_log))
         if perp < best_perp:
             best_perp = perp
         else:
             early_stop -= 1
-        # print("current validation report")
-        # print("\n{}\n".format(report))
-        # print()
         print("epcoh: {}, best perplexity:{} perplexity:{}".format(e + 1, best_perp, perp))
 
         if early_stop == 0:
@@ -120,9 +107,9 @@ def main():
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr)
 
     # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=args.lr_decay)
-    model, best_acc = trainer(train_loader, dev_loader, model, optimizer, criterion, early_stop=args.early_stop)
+    model, best_perp = trainer(train_loader, dev_loader, model, optimizer, criterion, early_stop=args.early_stop)
 
-    print('best_dev_acc:{}'.format(best_acc))
+    print('best_dev_perp:{}'.format(best_perp))
     predict(model, vocab, "The")
 
 
