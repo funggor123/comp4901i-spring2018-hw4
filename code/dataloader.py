@@ -50,6 +50,6 @@ def get_dataloaders(batch_size, max_len):
     data_loader_test = torch.utils.data.DataLoader(dataset=test,
                                                    batch_size=batch_size,
                                                    shuffle=False)
-    return data_loader_tr, data_loader_dev, data_loader_test, len(vocab.word2index)
+    return data_loader_tr, data_loader_dev, data_loader_test, len(vocab.word2index), vocab
 
 # data_loader_tr, data_loader_dev, data_loader_test = get_dataloaders(16)
