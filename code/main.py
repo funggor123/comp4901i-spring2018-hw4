@@ -8,12 +8,13 @@ import torch.nn as nn
 from dataloader import get_dataloaders
 from sklearn.metrics import classification_report, accuracy_score
 
+from tuning import tuning
 from RNN import RNNLM
 
 use_gpu = torch.cuda.is_available()
 
 
-def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, early_stop=3, scheduler=None):
+def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=10, early_stop=3, scheduler=None):
     best_perp = 0
     for e in range(epoch):
         loss_log = []
@@ -114,4 +115,10 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+
+    tune = True
+
+    if tune:
+        tuning()
+    else:
+        main()
