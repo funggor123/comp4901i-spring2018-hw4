@@ -14,7 +14,7 @@ use_gpu = torch.cuda.is_available()
 
 
 def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, early_stop=3, scheduler=None):
-    best_acc = 0
+    best_perp = 0
     for e in range(epoch):
         loss_log = []
         model.train()
@@ -40,8 +40,7 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, e
             pbar.set_description("(Epoch {}) TRAIN LOSS:{:.4f}".format((e + 1), np.mean(loss_log)))
 
         model.eval()
-        logits = []
-        ys = []
+        # logits = []
         loss_log = []
         for seq_in, target in dev_loader:
             ##########
@@ -52,29 +51,29 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, e
             logit = model(seq_in)
             loss = criterion(logit.view(-1, logit.shape[2]), target.view(-1))
             loss_log.append(loss.item())
-            logits.append(logit.data.cpu().numpy())
-            ys.append(target.data.cpu().numpy())
-        logits = np.concatenate(logits, axis=0)
-        preds = np.argmax(logits, axis=1)
-        ys = np.concatenate(ys, axis=0)
-        acc = accuracy_score(y_true=ys, y_pred=preds)
+            # logits.append(logit.data.cpu().numpy())
+            # ys.append(target.data.cpu().numpy())
+        # logits = np.concatenate(logits, axis=0)
+        # preds = np.argmax(logits, axis=1)
+        # ys = np.concatenate(ys, axis=0)
+        # acc = accuracy_score(y_true=ys, y_pred=preds)
         # label_names = ['rating 0', 'rating 1','rating 2']
         # report = classification_report(ys, preds, digits=3,
         #                             target_names=label_names)
-        if acc > best_acc:
+        if perp > best_perp:
             best_acc = acc
         else:
             early_stop -= 1
         # print("current validation report")
         # print("\n{}\n".format(report))
         # print()
-        print("epcoh: {}, current accuracy:{}, best accuracy:{} Perplexity:{}".format(e + 1, acc, best_acc, np.exp(np.mean(loss_log))))
+        print("epcoh: {}, current accuracy:{}, best accuracy:{} Perplexity:{}".format(e + 1, acc, best_perp, np.exp(np.mean(loss_log))))
 
         if early_stop == 0:
             break
         if scheduler is not None:
             scheduler.step()
-    return model, best_acc
+    return model, best_perp
 
 
 def predict(model, test_loader, save_file="submission.csv"):
