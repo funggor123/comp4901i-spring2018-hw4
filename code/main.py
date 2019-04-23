@@ -42,6 +42,7 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, e
         model.eval()
         logits = []
         ys = []
+        loss_log = []
         for seq_in, target in dev_loader:
             ##########
             if use_gpu:
@@ -49,6 +50,8 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, e
                 target = target.cuda()
             #######
             logit = model(seq_in)
+            loss = criterion(logit.view(-1, logit.shape[2]), target.view(-1))
+            loss_log.append(loss.item())
             logits.append(logit.data.cpu().numpy())
             ys.append(target.data.cpu().numpy())
         logits = np.concatenate(logits, axis=0)
@@ -65,7 +68,7 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, e
         # print("current validation report")
         # print("\n{}\n".format(report))
         # print()
-        print("epcoh: {}, current accuracy:{}, best accuracy:{}".format(e + 1, acc, best_acc))
+        print("epcoh: {}, current accuracy:{}, best accuracy:{} Perplexity:{}".format(e + 1, acc, best_acc, np.exp(np.mean(loss_log))))
 
         if early_stop == 0:
             break
