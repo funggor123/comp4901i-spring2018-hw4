@@ -32,7 +32,7 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=1000, e
 
             optimizer.zero_grad()
             outputs = model(seq_in)
-            loss = criterion(outputs.view(-1, outputs.shape[2]), target.view(-1))
+            loss = criterion(outputs, target.reshape(-1))
             loss.backward()
             optimizer.step()
 

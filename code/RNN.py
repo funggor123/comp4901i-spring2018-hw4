@@ -15,4 +15,9 @@ class RNNLM(nn.Module):
         rnn_out, _ = self.rnn(ebd)
         out = self.dropout(rnn_out)
         out = self.linear(out)
+        out = out.reshape(out.size(0) * out.size(1), out.size(2))
         return out
+
+
+
+
