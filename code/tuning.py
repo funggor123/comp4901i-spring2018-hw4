@@ -10,7 +10,8 @@ class Struct:
     def __init__(self, **entries):
         self.__dict__.update(entries)
 
-def setup(args, vocab_size):
+
+def setup(args, vocab_size, embedding_matrix=None):
     # build model
     # try to use pretrained embedding here
     model = RNNLM(args, vocab_size, embedding_matrix=None)
@@ -39,6 +40,7 @@ args = {
     'embed_dim': 128,
     'batch_size': 20,
     'dropout': 0.3,
+    'early_stop': 3,
 }
 
 args = Struct(**args)
