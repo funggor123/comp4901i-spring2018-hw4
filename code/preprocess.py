@@ -215,8 +215,6 @@ def preprocess(input_file, windows=200, test=False):
                 x += [["<Start>"] + batch]
                 y += [batch + ["<End>"]]
                 batch = []
-                if len(batch) > 30:
-                    break
             batch += [word]
         count_time_end(start_time, "Add Sequence")
         if test:
