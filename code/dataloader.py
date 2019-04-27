@@ -20,6 +20,7 @@ class Dataset(data.Dataset):
         """Returns one data pair (source and target)."""
         X = self.tokenize(self.X[index])
         if self.y is not None:
+            print(self.y)
             y = self.tokenize(self.y[index])
             return torch.LongTensor(X), torch.LongTensor(y)
         else:

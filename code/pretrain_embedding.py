@@ -32,7 +32,8 @@ class Dataset(data.Dataset):
     def __getitem__(self, index):
         """Returns one data pair (source and target)."""
         X = self.tokenize(self.X[index])
-        if (self.y is not None):
+        if self.y is not None:
+            print(y)
             y = self.tokenize(self.y[index])
             return torch.LongTensor(X), torch.LongTensor(y)
         else:
@@ -42,7 +43,6 @@ class Dataset(data.Dataset):
         return self.num_total_seqs
 
     def tokenize(self, sentence):
-        #return [self.vocab.word2index[word] if word in self.vocab.word2index else UNK_INDEX for word in sentence]
         return [self.vocab.word2Vector.vocab.get(word).index if word in self.vocab.word2Vector.vocab else
                 self.vocab.word2Vector.vocab.get("0").index for word in sentence]
 

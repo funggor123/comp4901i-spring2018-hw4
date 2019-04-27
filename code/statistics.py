@@ -40,8 +40,6 @@ def Lang(vocabs, windows, amount_stay=50):
                 vocabs.index_words(batch)
                 x += [["<Start>"] + batch]
                 y += [batch + ["<End>"]]
-                if len(x) > 400:
-                    break
                 batch = []
             batch += [word]
 

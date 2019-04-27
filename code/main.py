@@ -1,9 +1,14 @@
+import pandas as pd
 import numpy as np
 import argparse
 from tqdm import tqdm
+
 import torch
 import torch.nn as nn
 from dataloader import get_dataloaders
+from sklearn.metrics import classification_report, accuracy_score
+
+from tuning import start_tuning
 from preprocess import clean_str
 from RNN import RNNLM
 
@@ -84,7 +89,7 @@ def main():
     parser.add_argument("--num_layers", type=int, default=2)
     parser.add_argument("--window_size", type=int, default=30)
     parser.add_argument("--lr_decay", type=float, default=0.5)
-    parser.add_argument("--amount_of_vocab", type=int, default=20000)
+    parser.add_argument("--amount_of_vocab", type=int, default=-1)
     args = parser.parse_args()
 
     # load data
@@ -109,4 +114,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    tune = True
+    if tune:
+        tuning()
+    else:
+        main()
