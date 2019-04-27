@@ -32,8 +32,8 @@ class Dataset(data.Dataset):
         return [self.vocab.word2index[word] if word in self.vocab.word2index else UNK_INDEX for word in sentence]
 
 
-def get_dataloaders(batch_size, window_size):
-    vocab = getVocab(window_size)
+def get_dataloaders(batch_size, window_size,  amount_of_vocab):
+    vocab = getVocab(window_size,  amount_of_vocab)
     train_data_sent_in, train_data_sent_out = preprocess("dataset/micro/train.txt", windows=window_size)
     dev_data_sent_in, dev_data_sent_out = preprocess("dataset/micro/valid.txt", windows=window_size)
     test_data_sent_in, test_data_sent_out = preprocess("dataset/micro/test.txt", test=True, windows=window_size)

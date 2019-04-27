@@ -84,10 +84,12 @@ def main():
     parser.add_argument("--num_layers", type=int, default=2)
     parser.add_argument("--window_size", type=int, default=30)
     parser.add_argument("--lr_decay", type=float, default=0.5)
+    parser.add_argument("--amount_of_vocab", type=int, default=20000)
     args = parser.parse_args()
 
     # load data
-    train_loader, dev_loader, test_loader, vocab_size, vocab = get_dataloaders(args.batch_size, args.window_size)
+    train_loader, dev_loader, test_loader, vocab_size, vocab = get_dataloaders(args.batch_size, args.window_size,
+                                                                               args.amount_of_vocab)
 
     # build model
     # try to use pretrained embedding here

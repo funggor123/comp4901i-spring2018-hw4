@@ -6,7 +6,6 @@ UNK_INDEX = 0
 START_INDEX = 1
 END_INDEX = 2
 
-
 class Vocab:
     def __init__(self):
         self.word2index = {"UNK": UNK_INDEX, "<Start>": START_INDEX, "<End>": END_INDEX}
@@ -67,21 +66,21 @@ def Lang(vocabs, windows, amount_stay=50):
     lambda kv: (kv[1], kv[0]), reverse=True)[0:10]
 
     if amount_stay != -1:
-        word2count = set(OrderedDict(sorted(vocabs.word2count.items(), key=lambda kv: kv[1], reverse=True)[:amount_stay]))
+        word2count = set(
+            OrderedDict(sorted(vocabs.word2count.items(), key=lambda kv: kv[1], reverse=True)[:amount_stay]))
         vocabs = Vocab()
         for word in data:
             if len(batch) == windows - 1:
                 if word in word2count:
                     vocabs.index_words(batch)
 
-
     # 6. UNK token rate
     # statistic['UNK token rate'] = unknowWord / vocabs.word_num
     return statistic, vocabs
 
 
-def getVocab(window_size):
+def getVocab(window_size, amount_of_vocab=500):
     vocab = Vocab()
-    statistic, vocab = Lang(vocab, window_size, amount_stay=50)
+    statistic, vocab = Lang(vocab, window_size,  amount_of_vocab)
     print(statistic)
     return vocab
