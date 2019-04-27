@@ -72,6 +72,7 @@ def Lang(vocabs, windows, amount_stay=50):
             if len(batch) == windows - 1:
                 if word in word2count:
                     vocabs.index_words(batch)
+                batch = []
             batch += [word]
 
     # 6. UNK token rate
