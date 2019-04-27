@@ -82,6 +82,6 @@ def Lang(vocabs, windows, amount_stay=50):
 
 def getVocab(window_size):
     vocab = Vocab()
-    statistic, vocab = Lang(vocab, window_size, amount_stay=78)
+    statistic, vocab = Lang(vocab, window_size, amount_stay=50)
     print(statistic)
     return vocab
