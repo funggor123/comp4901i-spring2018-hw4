@@ -15,7 +15,7 @@ from RNN import RNNLM
 use_gpu = torch.cuda.is_available()
 
 
-def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=10, early_stop=3, scheduler=None):
+def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=20, early_stop=5, scheduler=None):
     best_perp = 9999999
     for e in range(epoch):
         loss_log = []
@@ -75,7 +75,7 @@ def predict(model, vocab, start_vocab):
             input = input.cuda()
         output, hidden = model(input, hidden)
         word_id = torch.multinomial(torch.nn.Softmax(dim=0)(output), num_samples=1).item()
-    print(words)
+    # print(words)
 
 
 def main():
@@ -93,8 +93,7 @@ def main():
     args = parser.parse_args()
 
     # load data
-    train_loader, dev_loader, test_loader, vocab_size, vocab = get_dataloaders(args.batch_size, args.window_size,
-                                                                               args.amount_of_vocab)
+    train_loader, dev_loader, test_loader, vocab_size, vocab = get_dataloaders(args.batch_size, args.window_size, args.amount_of_vocab)
     # build model
     # try to use pretrained embedding here
     model = RNNLM(args, vocab_size, embedding_matrix=None)
@@ -113,7 +112,7 @@ def main():
 
 
 if __name__ == "__main__":
-    tune = False
+    tune = True
     if tune:
         tuning.start_tuning()
     else:

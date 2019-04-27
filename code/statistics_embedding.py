@@ -10,7 +10,7 @@ class Vocab:
         # the minimum limit is 10000
         self.word2Vector = gensim.models.KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin',
                                                                            binary=True, limit=10000)
-        print(self.word2Vector)
+        # print(self.word2Vector)
         self.no_of_vocab = len(self.word2Vector.wv.vectors)
         self.embeddings_matrix = self.word2Vector.wv.vectors
 
