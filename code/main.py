@@ -8,7 +8,7 @@ import torch.nn as nn
 from dataloader import get_dataloaders
 from sklearn.metrics import classification_report, accuracy_score
 
-from tuning import start_tuning
+import tuning
 from preprocess import clean_str
 from RNN import RNNLM
 
@@ -114,8 +114,8 @@ def main():
 
 
 if __name__ == "__main__":
-    tune = True
+    tune = False
     if tune:
-        tuning()
+        tuning.start_tuning()
     else:
         main()

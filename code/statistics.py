@@ -67,10 +67,12 @@ def Lang(vocabs, windows, amount_stay=50):
         word2count = set(
             OrderedDict(sorted(vocabs.word2count.items(), key=lambda kv: kv[1], reverse=True)[:amount_stay]))
         vocabs = Vocab()
+        batch = []
         for word in data:
             if len(batch) == windows - 1:
                 if word in word2count:
                     vocabs.index_words(batch)
+            batch += [word]
 
     # 6. UNK token rate
     # statistic['UNK token rate'] = unknowWord / vocabs.word_num
