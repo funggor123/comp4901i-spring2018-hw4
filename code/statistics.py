@@ -1,14 +1,18 @@
-from preprocess import preprocess
+from preprocess import clean_str
+import operator
+from collections import OrderedDict
 
 UNK_INDEX = 0
+START_INDEX = 1
+END_INDEX = 2
 
 
 class Vocab:
     def __init__(self):
-        self.word2index = {"UNK": UNK_INDEX}
+        self.word2index = {"UNK": UNK_INDEX, "<Start>": START_INDEX, "<End>": END_INDEX}
         self.word2count = {}
-        self.index2word = {UNK_INDEX: "UNK"}
-        self.n_words = 1  # Count default tokens
+        self.index2word = {UNK_INDEX: "UNK", START_INDEX: "<Start>", END_INDEX: "<End>"}
+        self.n_words = 3  # Count default tokens
         self.word_num = 0
 
     def index_words(self, sentence):
@@ -23,38 +27,28 @@ class Vocab:
                 self.word2count[word] += 1
 
 
-def Lang(vocabs, sent_in, max_vocab=-1):
+def Lang(vocabs, windows, amount_stay=50):
     statistic = {"sent_num": 0, "word_num": 0, "vocab_size": 0, "vocab_size_>3": 0}
-    # Build Vocab
-    for sent in sent_in:
-        vocabs.index_words(sent)
+    x = []
+    y = []
+    with open("./dataset/micro/train.txt", "r") as f:
+        data = f.read()
+        data = clean_str(data)
+        data = data.split()
+        batch = []
+        for word in data:
+            if len(batch) == windows - 1:
+                vocabs.index_words(batch)
+                x += [["<Start>"] + batch]
+                y += [batch + ["<End>"]]
+                if len(x) > 400:
+                    break
+                batch = []
+            batch += [word]
 
-
-    #limit the size of vocab
-    if(max_vocab > 0):
-        sorted_vocabCount = sorted(vocabs.word2count.items(),reverse=True, key=lambda kv: kv[1])
-        unknowWord = 0
-        newWord2index = {"UNK": UNK_INDEX}
-        newIndex2word = {UNK_INDEX: "UNK"}
-        newWord2Count = {}
-        index = 1 
-        for i , k in sorted_vocabCount:
-            if(index < max_vocab):
-                newWord2index[i] = index
-                newIndex2word[index] = i
-                newWord2Count[i] = k
-                print(index,i,k)
-                index = index+1
-            else:
-                unknowWord += k
-        #print("newWord2index: ",newWord2index, "newIndex2word: ", newIndex2word, "newWord2Count: ", newWord2Count, "unknowWord:", unknowWord, "wordNumber", "newNumWord: ", len(newWord2index) )
-        vocabs.word2count = newWord2Count
-        vocabs.word2index = newWord2index
-        vocabs.index2word = newIndex2word
-        vocabs.n_words = len(newWord2index)
     # Statistic
     # 1. Number of sentences
-    statistic["sent_num"] = len(sent_in)
+    statistic["sent_num"] = len(x)
 
     # 2. Number of words
     statistic['word_num'] = vocabs.word_num
@@ -64,7 +58,7 @@ def Lang(vocabs, sent_in, max_vocab=-1):
 
     # 4. Number of unique words && > 3
     for vocab in vocabs.word2index:
-        if vocab is not "UNK" and vocab is not "<Start>" and vocab is not "<End>":
+        if vocab not in ["UNK", "<Start>", "<End>"]:
             if vocabs.word2count[vocab] > 3:
                 statistic['vocab_size_>3'] += 1
 
@@ -72,19 +66,22 @@ def Lang(vocabs, sent_in, max_vocab=-1):
     statistic['frequent_word'] = sorted(vocabs.word2count.items(), key=
     lambda kv: (kv[1], kv[0]), reverse=True)[0:10]
 
+    if amount_stay != -1:
+        word2count = set(OrderedDict(sorted(vocabs.word2count.items(), key=lambda kv: kv[1], reverse=True)[:amount_stay]))
+        vocabs = Vocab()
+        for word in data:
+            if len(batch) == windows - 1:
+                if word in word2count:
+                    vocabs.index_words(batch)
+
+
     # 6. UNK token rate
-    statistic['UNK token rate'] = unknowWord/vocabs.word_num
+    # statistic['UNK token rate'] = unknowWord / vocabs.word_num
     return statistic, vocabs
 
 
-def getVocab():
+def getVocab(window_size):
     vocab = Vocab()
-    sent_in, sent_out = preprocess("dataset/micro/train.txt")
-    # max_vocab = -1 use all vocab
-    statistic, vocab = Lang(vocab, sent_in, max_vocab=10000)
+    statistic, vocab = Lang(vocab, window_size, amount_stay=78)
     print(statistic)
     return vocab
-
-
-# Testing
-#getVocab()

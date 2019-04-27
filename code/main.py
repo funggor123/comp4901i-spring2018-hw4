@@ -1,21 +1,17 @@
-import pandas as pd
 import numpy as np
 import argparse
 from tqdm import tqdm
-
 import torch
 import torch.nn as nn
 from dataloader import get_dataloaders
-from sklearn.metrics import classification_report, accuracy_score
-
-from tuning import tuning
+from preprocess import clean_str
 from RNN import RNNLM
 
 use_gpu = torch.cuda.is_available()
 
 
 def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=10, early_stop=3, scheduler=None):
-    best_perp = 0
+    best_perp = 9999999
     for e in range(epoch):
         loss_log = []
         model.train()
@@ -25,12 +21,10 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=10, ear
             model = model.cuda()
         #####
         for i, (seq_in, target) in pbar:
-
             # use gpu for training
             if use_gpu:
                 seq_in = seq_in.cuda()
                 target = target.cuda()
-
             optimizer.zero_grad()
             outputs, hidden = model(seq_in)
             loss = criterion(outputs, target.reshape(-1))
@@ -43,11 +37,9 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=10, ear
         model.eval()
         loss_log = []
         for seq_in, target in dev_loader:
-            ##########
             if use_gpu:
                 seq_in = seq_in.cuda()
                 target = target.cuda()
-            #######
             outputs, hidden = model(seq_in)
             loss = criterion(outputs, target.reshape(-1))
             loss_log.append(loss.item())
@@ -57,7 +49,6 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=10, ear
         else:
             early_stop -= 1
         print("epcoh: {}, best perplexity:{} perplexity:{}".format(e + 1, best_perp, perp))
-
         if early_stop == 0:
             break
         if scheduler is not None:
@@ -67,18 +58,19 @@ def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=10, ear
 
 def predict(model, vocab, start_vocab):
     model.eval()
-    input = torch.LongTensor(vocab.word2index(start_vocab)).reshape(1, 1, 1)
+    word_id = vocab.word2index[start_vocab]
     word = ""
+    words = []
     hidden = None
-    while word != "<End>":
-        ###
+    while word != "<End>" and len(words) < 50:
+        input = torch.LongTensor([word_id]).reshape(1, 1)
+        word = vocab.index2word[word_id]
+        words += [word]
         if use_gpu:
             input = input.cuda()
-        ###
         output, hidden = model(input, hidden)
-        word_id = torch.multinomial(output, num_samples=1).item().cuda()
-        input = word_id.reshape(1, 1, 1)
-        word = vocab.index2word(word_id.cpu().numpy())
+        word_id = torch.multinomial(torch.nn.Softmax(dim=0)(output), num_samples=1).item()
+    print(words)
 
 
 def main():
@@ -111,14 +103,8 @@ def main():
     model, best_perp = trainer(train_loader, dev_loader, model, optimizer, criterion, early_stop=args.early_stop)
 
     print('best_dev_perp:{}'.format(best_perp))
-    predict(model, vocab, "The")
+    predict(model, vocab, clean_str("The"))
 
 
 if __name__ == "__main__":
-
-    tune = True
-
-    if tune:
-        tuning()
-    else:
-        main()
+    main()

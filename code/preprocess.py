@@ -214,6 +214,8 @@ def preprocess(input_file, windows=200, test=False):
             if len(batch) == windows - 1:
                 x += [["<Start>"] + batch]
                 y += [batch + ["<End>"]]
+                if len(x) > 400:
+                    break
                 batch = []
             batch += [word]
         count_time_end(start_time, "Add Sequence")
@@ -224,7 +226,3 @@ def preprocess(input_file, windows=200, test=False):
             return x, y
 
 
-# Testing
-# x, y = preprocess("./dataset/micro/train.txt", windows=20, test=False)
-# print(x[1])
-# print(y[1])
