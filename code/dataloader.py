@@ -21,7 +21,6 @@ class Dataset(data.Dataset):
         X = self.tokenize(self.X[index])
         if self.y is not None:
             y = self.tokenize(self.y[index])
-            # print(y)
             return torch.LongTensor(X), torch.LongTensor(y)
         else:
             return torch.LongTensor(X)
