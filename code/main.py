@@ -89,7 +89,7 @@ def main():
     parser.add_argument("--num_layers", type=int, default=2)
     parser.add_argument("--window_size", type=int, default=30)
     parser.add_argument("--lr_decay", type=float, default=0.5)
-    parser.add_argument("--amount_of_vocab", type=int, default=2000)
+    parser.add_argument("--amount_of_vocab", type=int, default=25000)
     args = parser.parse_args()
 
     # load data
