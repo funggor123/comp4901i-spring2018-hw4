@@ -86,7 +86,7 @@ def start_tuning():
     #------------------------------------------------
 
     print("Best Perplexity: {}".format(best_perp))
-    print("Best args: {}".format(best_args))
+    print("Best args: \nlr = {}\ndim size = {}\nnum layers = {}".format(best_args.lr, best_args.dim_size, best_args.num_layers))
 
     print("Use the model with the best Hyper-parameters and report the test set perplexity")
     _best_perp = setup(best_args, vocab_size, _train_loader=train_loader, _dev_loader=test_loader)
