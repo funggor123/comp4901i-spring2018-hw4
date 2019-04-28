@@ -27,9 +27,10 @@ class Vocab:
 
 
 def Lang(vocabs, windows, amount_stay=50):
-    statistic = {"sent_num": 0, "word_num": 0, "vocab_size": 0, "vocab_size_>3": 0}
+    statistic = {"sent_num": 0, "word_num": 0, "vocab_size": 0, "vocab_size_>3": 0, "UNK_rate": 0}
     x = []
     y = []
+
     with open("./dataset/micro/train.txt", "r") as f:
         data = f.read()
         data = clean_str(data)
@@ -76,12 +77,17 @@ def Lang(vocabs, windows, amount_stay=50):
             batch += [word]
 
     # 6. UNK token rate
-    # statistic['UNK token rate'] = unknowWord / vocabs.word_num
+    for word in data:
+        if word not in vocabs.word2index:
+            statistic['UNK_rate'] += 1
+
+    statistic['UNK_rate'] = statistic['UNK_rate'] / len(data)
+
     return statistic, vocabs
 
 
 def getVocab(window_size, amount_of_vocab=500):
     vocab = Vocab()
-    statistic, vocab = Lang(vocab, window_size,  amount_of_vocab)
+    statistic, vocab = Lang(vocab, window_size,  amount_stay=amount_of_vocab)
     print(statistic)
     return vocab
