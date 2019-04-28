@@ -38,7 +38,7 @@
 
 \subsection{Preprocessing}
 
-In the data clearning part, we first turn all the unicode string into \textbf{ASCII} and \textbf{lower case}.Then, we \textbf{expand the contradiction} and \textbf{remove all the characters except (A-Za-z0-9,!?;)}. Finally, the preprcessed data are tokenized by the \textbf{white space}. 
+In the data clearning part, we first turn all the unicode string into \textbf{ASCII} and \textbf{lower case}. Then, we \textbf{expand the contradiction} and \textbf{remove all the characters except (A-Za-z0-9,.!?;)}. Finally, the preprcessed data are tokenized by the \textbf{white space} and are  \textbf{contructed as sequences} with windows size 30 with adding the start and end of sentence indicator.
 
 \subsection{Data Statistics}
 The following are the data statistics.
@@ -101,7 +101,7 @@ We use the model with the best Hyperparameters and obtain the following test per
 		\cmidrule{1-2}
 		Dataset & Best Test Perplexity\\
 		\midrule
-		Test Set & 0.63   \\
+		Test Set & 212.6539  \\
 		\bottomrule
 	\end{tabular}
 \end{table}
@@ -113,7 +113,7 @@ We found out that for \textbf{smaller learning rate}, the best validation \textb
 For the number of hidden layer and hidden dimension size. We found out that with \textbf{more number of hidden layer and higher hidden dimension size}, the best validation \textbf{perplexity is higher}. This may because deeper and wider network can fruitful for difficult and abstract problem such as language generation and getting better performance. On the other hand, too little number of hidden layer and hidden dimension size may cause the neural network unable to have enough ability to learn different features.
 
 \subsection{Training with Pretrained Word embeddings}
-For Pretrained Word Embedding, we have tried to replace the original word embedding layer by the pretrained \textbf{word2Vector} with \textbf{Google News corpus} (3 billion running words) word vector model. (Google News Corpus: https://github.com/mmihaltz/word2vec-GoogleNews-vectors). And since the dimension of the embedding matrix is enormously big which cause some memory error during training, we have limited to only use ten thousands of vocabs. All above process can be easily done through by a python libarary named \textbf{gensim}. And the following are the results of using pretrained embedding. \textbf{(This part are implemented in the files with postfix \_embedding.py)}
+For Pretrained Word Embedding, we have tried to replace the original word embedding layer by the pretrained \textbf{word2Vector} with \textbf{Google News corpus} (3 billion running words) word vector model. (Google News Corpus: https://github.com/mmihaltz/word2vec-GoogleNews-vectors). And since the dimension of the embedding matrix is enormously big which cause some memory error during training, we have limited to only use ten thousands of vocabs. All above process can be easily done through by a python libarary named \textbf{gensim}. And the following are the results of using pretrained embedding. \textbf{(This part are implemented in the files with postfix \_word2vector.py)}
 
 We train the model with pretrained word embedding with the best hyperarameters and same setting as the training without pretrained word embedding. The following are the results.
 
@@ -131,7 +131,7 @@ We train the model with pretrained word embedding with the best hyperarameters a
 	\end{tabular}
 \end{table}
 
-From the test results with pretrained word embedding, we found out that the language model with pretrained word embeddings have better \textbf{better performance (lower perplexity)}. 
+From the test results with pretrained word embedding, we found out that the language model with pretrained word embeddings have better \textbf{better performance (lower perplexity)} $(127.5408 < 212.6539)$. 
 
 \subsection{Language Generation}
 The following are the short paragraph generated from our models using the folloing words as starting.
