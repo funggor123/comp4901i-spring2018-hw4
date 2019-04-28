@@ -15,7 +15,6 @@ class Vocab:
             self.index2char[self.default_words + i] = char
             self.no_vocab += 1
 
-
 def getVocab():
     vocab = Vocab()
     return vocab

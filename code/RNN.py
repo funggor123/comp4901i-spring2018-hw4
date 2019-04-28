@@ -1,6 +1,5 @@
 import torch.nn as nn
-import torch.nn.functional as F
-import torch
+
 
 class RNNLM(nn.Module):
     def __init__(self, args, vocab_size, embedding_matrix=None):
@@ -18,6 +17,3 @@ class RNNLM(nn.Module):
         out = self.linear(out)
         out = out.reshape(out.size(0) * out.size(1), out.size(2))
         return out, hidden
-
-
-

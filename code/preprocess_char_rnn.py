@@ -3,7 +3,6 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem.snowball import PorterStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
-import time
 import unicodedata
 
 nltk.download('stopwords')
@@ -12,6 +11,7 @@ sno = PorterStemmer()
 wnl = WordNetLemmatizer()
 
 
+# Clean the string
 def clean_str(string):
     string = unicodeToAscii(string)
     string = lower_string(string)
@@ -20,6 +20,7 @@ def clean_str(string):
     return string
 
 
+# Stemming and lemmatization
 def stem_and_lemma(data):
     # stem is too slow
     # data = [sno.stem(w) for w in data]
@@ -27,15 +28,18 @@ def stem_and_lemma(data):
     return data
 
 
+# Convert the string into lower case
 def lower_string(string):
     return string.strip().lower()
 
 
+# Perform Stop Word Filtering
 def stop_word_filtering(data):
     data = [w for w in data if not w in stop]
     return data
 
 
+# Expand the contradiction
 def expand_contradiction(string):
     # Expand the Contradiction
     contractions_re = re.compile('(%s)' % '|'.join(contractions_dict.keys()))
@@ -203,16 +207,6 @@ def clean_sp_char(string):
     return string
 
 
-def count_time_start():
-    start_time = time.time()
-    return start_time
-
-
-def count_time_end(start_time, task_str):
-    elapsed_time = time.time() - start_time
-    print(elapsed_time, "seconds " + task_str)
-
-
 sample = -1
 
 
@@ -220,17 +214,8 @@ def preprocess(input_file, windows=200, test=False):
     x = []
     y = []
     with open(input_file, "r", encoding='utf-8') as f:
-        start_time = count_time_start()
         data = f.read()
-        count_time_end(start_time, "load files")
-        start_time = count_time_start()
         data = clean_str(data)
-        # Bad Effect when filtering stop words
-        # data = stop_word_filtering(data)
-        # Stemming and lemmatize is slow
-        # data = stem_and_lemma(data)
-        count_time_end(start_time, "clean dataset")
-        start_time = count_time_start()
         batch = []
         for word in data:
             if len(batch) == windows - 1:
@@ -241,13 +226,8 @@ def preprocess(input_file, windows=200, test=False):
                     if len(x) > sample:
                         break
             batch += [word]
-        count_time_end(start_time, "Add Sequence")
         if test:
             return x, None
         else:
             assert len(x) == len(y)
             return x, y
-
-
-#train_data_sent_in, train_data_sent_out = preprocess("dataset/micro/train.txt", windows=10)
-#print(train_data_sent_in[0])

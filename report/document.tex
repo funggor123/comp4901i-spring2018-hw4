@@ -38,7 +38,7 @@
 
 \subsection{Preprocessing}
 
-In the data clearning part, we first turn all the unicode string into \textbf{ASCII} and \textbf{lower case}. Then, we \textbf{expand the contradiction} and \textbf{remove all the characters except (A-Za-z0-9,.!?;)}. Finally, the preprcessed data are tokenized by the \textbf{white space} and are  \textbf{contructed as sequences} with windows size 30 with adding the start and end of sentence indicator.
+In the data cleaning part, we first turn all the unicode string into \textbf{ASCII} and \textbf{lower case}. Then, we \textbf{expand the contradiction} and \textbf{remove all the characters except (A-Za-z0-9,.!?;)}. Finally, the preprocessed data are tokenized by the \textbf{white space} and are  \textbf{contructed as sequences} with windows size 30 with adding the start and end of sentence indicator.
 
 \subsection{Data Statistics}
 The following are the data statistics.
@@ -108,14 +108,14 @@ We use the model with the best Hyperparameters and obtain the following test per
 
 \subsection{Discussion of Hyperparameters Tuning Reults}
 
-We found out that for \textbf{smaller learning rate}, the best validation \textbf{perplexity is higher} but converge slower. This may because high learning rate whcih means a larger step size may cause the gradient descent overshot the optimal easier which trigger the early stopping earlier. On the other hand, low learning rate which means a smaller step size getting less chance to overshot the optimal. Thus, it can achieve better optimal point and getting better performance.
+We found out that for \textbf{smaller learning rate}, the best validation \textbf{perplexity is higher} but converge slower. This may because for higher learning rate which means a larger step size may cause the gradient descent overshot the optimal easier which may trigger early stopping earlier. On the other hand, low learning rate which means a smaller step size may getting less chance to overshot the optimal. Thus, it can achieve better optimal point and getting better performance.
 
-For the number of hidden layer and hidden dimension size. We found out that with \textbf{more number of hidden layer and higher hidden dimension size}, the best validation \textbf{perplexity is higher}. This may because deeper and wider network can fruitful for difficult and abstract problem such as language generation and getting better performance. On the other hand, too little number of hidden layer and hidden dimension size may cause the neural network unable to have enough ability to learn different features.
+For the number of hidden layer and hidden dimension size. We found out that with \textbf{more number of hidden layer and higher hidden dimension size}, the best validation \textbf{perplexity is higher}. This may because deeper and wider network can fruitful for difficult and abstract problem such as language generation and getting better performance. On the other hand, little number of hidden layer and hidden dimension size may cause the neural network unable to have enough ability to learn different features.
 
 \subsection{Training with Pretrained Word embeddings}
 For Pretrained Word Embedding, we have tried to replace the original word embedding layer by the pretrained \textbf{word2Vector} with \textbf{Google News corpus} (3 billion running words) word vector model. (Google News Corpus: https://github.com/mmihaltz/word2vec-GoogleNews-vectors). And since the dimension of the embedding matrix is enormously big which cause some memory error during training, we have limited to only use ten thousands of vocabs. All above process can be easily done through by a python libarary named \textbf{gensim}. And the following are the results of using pretrained embedding. \textbf{(This part are implemented in the files with postfix \_word2vector.py)}
 
-We train the model with pretrained word embedding with the best hyperarameters and same setting as the training without pretrained word embedding. The following are the results.
+We train the model with pretrained word embedding with the best hyperarameters and having same setting as the training without pretrained word embedding. The following are the test results.
 
 \begin{table}[htb]
 	\caption{Test Results with Pretrained word Embedding}
@@ -136,20 +136,20 @@ From the test results with pretrained word embedding, we found out that the lang
 \subsection{Language Generation}
 The following are the short paragraph generated from our models using the folloing words as starting.
 
-\paragraph{Start from "I"}
+\paragraph{Start from "I"} i fronting parading twinge wad gleam moliere wasermarrer homestall idolater authoritative convinced engineering unassailable ame enthuse uganda quatrain ramped disturbingly experimentation re finnish noblest orphaned fares', brooked frankness emposo monthly harsh deputy
 
-\paragraph{Start from "What"}
+\paragraph{Start from "What"} what imbruted arroyo specter vet unmentionable behest reptiles nick accumulation combings spasmodically mucksy august
 
-\paragraph{Start from "Anyway"}
+\paragraph{Start from "Anyway"} anyway neuchatel requirements shlin10 caul inexplicable elysees kindergartens joshua
 
 \pagebreak
 
 \section{Bonus}
 
 \subsection{Char Level RNN}
-For the bonus part, we have implmented Char Level RNN with reference of the Char Level CNN. Samiliar as Char Level CNN, we have defined a list of characters which includes 26 English letters, 10 digits, 5 special characters ,a blank character, a start sentence and a end of sentence character. (\textbf{44 Characters in total}). 
+For the bonus part, we have implemented Char Level RNN with the reference of the Char Level CNN. Samiliar to Char Level CNN, we have defined a list of characters which includes 26 English letters, 10 digits, 5 special characters , a blank character, a start sentence and a end of sentence character. (\textbf{44 Characters in total}). 
 
-In the later part, we convert the each character in the seqence into index and input into the RNN same as the word level RNN performing.  \textbf{(This bonus are implemented in the files with postfix \_char\_rnn.py)}
+In the later part, we convert the each characters in the sequence into index and input into the RNN same as the word level RNN performing.  \textbf{(This part are implemented in the files with postfix \_char\_rnn.py)}
 
 We train the char level rnn with the best hyperarameters and obtain the following test results.
 

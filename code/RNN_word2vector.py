@@ -6,8 +6,6 @@ import torch
 class RNNLM(nn.Module):
     def __init__(self, args, vocab_size, embedding_matrix=None):
         super(RNNLM, self).__init__()
-        #self.embedding = nn.Embedding(vocab_size, args.embed_dim)
-        #self.rnn = nn.RNN(args.embed_dim, args.dim_size, args.num_layers, dropout=args.dropout, batch_first=True)
         if torch.cuda.is_available():
             embedding_matrix_tensor = torch.FloatTensor(embedding_matrix).cuda()
         else:
