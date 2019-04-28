@@ -85,7 +85,7 @@ def main():
     parser.add_argument("--batch_size", type=int, default=20)
     parser.add_argument("--early_stop", type=int, default=10)
     parser.add_argument("--embed_dim", type=int, default=128)
-    parser.add_argument("--dim_size", type=int, default=256)
+    parser.add_argument("--dim_size", type=int, default=512)
     parser.add_argument("--num_layers", type=int, default=2)
     parser.add_argument("--window_size", type=int, default=30)
     parser.add_argument("--lr_decay", type=float, default=0.5)
