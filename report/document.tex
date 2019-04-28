@@ -38,7 +38,7 @@
 
 \subsection{Preprocessing}
 
-In the data clearning part, we first turn all the unicode string into \textbf{ASCII} and \textbf{lower case}. Then, we \textbf{expand the contradiction} and \textbf{remove all the characters except (A-Za-z0-9,!?;)}. Finally, the preprcessed data are tokenized by the \textbf{white space}. 
+In the data clearning part, we first turn all the unicode string into \textbf{ASCII} and \textbf{lower case}.Then, we \textbf{expand the contradiction} and \textbf{remove all the characters except (A-Za-z0-9,!?;)}. Finally, the preprcessed data are tokenized by the \textbf{white space}. 
 
 \subsection{Data Statistics}
 The following are the data statistics.
@@ -66,7 +66,7 @@ The following are the data statistics.
 \section{Results and Analysis}
 
 \subsection{Hyperparameters Tuning Results}
-The following are the hyperparameters tuning results.
+The following are the hyperparameters tuning results (Epochs=20, Early Stop=3).
 
 \begin{table}[htb]
 	\caption{Hyperparameter tuning results}
@@ -106,16 +106,16 @@ We use the model with the best Hyperparameters and obtain the following test per
 	\end{tabular}
 \end{table}
 
-\subsection{Discuss of Parameters Tuning Reults}
+\subsection{Discussion of Hyperparameters Tuning Reults}
 
-We found out that for \textbf{smaller learning rate}, the best validation \textbf{perplexity is higher} but converge slower. This may because high learning rate whcih means a larger step size may cause the gradient descent overshot the optimal easier which trigger the early stopping earlier. On the other hand, low learning rate which means a smaller step size getting less chance to overshot the optimal.  
+We found out that for \textbf{smaller learning rate}, the best validation \textbf{perplexity is higher} but converge slower. This may because high learning rate whcih means a larger step size may cause the gradient descent overshot the optimal easier which trigger the early stopping earlier. On the other hand, low learning rate which means a smaller step size getting less chance to overshot the optimal. Thus, it can achieve better optimal point and getting better performance.
 
-For the number of hidden layer and hidden dimension size. We found out that with \textbf{more number of hidden layer and higher hidden dimension size}, \textbf{the validation perplexity is higher}. This may because deeper and wider network can be fruitful for difficult and abstract problem such as language generation.
+For the number of hidden layer and hidden dimension size. We found out that with \textbf{more number of hidden layer and higher hidden dimension size}, the best validation \textbf{perplexity is higher}. This may because deeper and wider network can fruitful for difficult and abstract problem such as language generation and getting better performance. On the other hand, too little number of hidden layer and hidden dimension size may cause the neural network unable to have enough ability to learn different features.
 
-\subsection{Train with Pretrained Word embeddings}
+\subsection{Training with Pretrained Word embeddings}
 For Pretrained Word Embedding, we have tried to replace the original word embedding layer by the pretrained \textbf{word2Vector} with \textbf{Google News corpus} (3 billion running words) word vector model. (Google News Corpus: https://github.com/mmihaltz/word2vec-GoogleNews-vectors). And since the dimension of the embedding matrix is enormously big which cause some memory error during training, we have limited to only use ten thousands of vocabs. All above process can be easily done through by a python libarary named \textbf{gensim}. And the following are the results of using pretrained embedding. \textbf{(This part are implemented in the files with postfix \_embedding.py)}
 
-We train the model with pretrained word embedding with the best hyperarameters and obtain the following test results.
+We train the model with pretrained word embedding with the best hyperarameters and same setting as the training without pretrained word embedding. The following are the results.
 
 \begin{table}[htb]
 	\caption{Test Results with Pretrained word Embedding}
@@ -126,12 +126,12 @@ We train the model with pretrained word embedding with the best hyperarameters a
 		\cmidrule{1-2}
 		Dataset & Best Test Perplexity\\
 		\midrule
-		Test Set & 0.63   \\
+		Test Set & 127.5408   \\
 		\bottomrule
 	\end{tabular}
 \end{table}
 
-From the test Results with Pretrained word Embedding, we found out that the language model with pretrained word embeddings give \textbf{better results (lower perplexity)}.
+From the test results with pretrained word embedding, we found out that the language model with pretrained word embeddings have better \textbf{better performance (lower perplexity)}. 
 
 \subsection{Language Generation}
 The following are the short paragraph generated from our models using the folloing words as starting.

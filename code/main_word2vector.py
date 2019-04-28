@@ -4,9 +4,9 @@ import argparse
 from tqdm import tqdm
 import torch
 import torch.nn as nn
-from pretrain_embedding import get_dataloaders
+from preprocess_word2vector import get_dataloaders
 import tuning
-from RNN_emb import RNNLM
+from RNN_word2vector import RNNLM
 
 
 def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=10, early_stop=3, scheduler=None):

@@ -1,7 +1,7 @@
 import pandas as pd
 import torch
 import torch.utils.data as data
-from statistics_embedding import getVocab
+from statistics_word2vector import getVocab
 from preprocess import preprocess
 
 UNK_INDEX = 0
