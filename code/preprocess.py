@@ -4,6 +4,7 @@ from nltk.corpus import stopwords
 from nltk.stem.snowball import PorterStemmer
 from nltk.stem.wordnet import WordNetLemmatizer
 import time
+import unicodedata
 
 nltk.download('stopwords')
 stop = stopwords.words('english')
@@ -12,10 +13,19 @@ wnl = WordNetLemmatizer()
 
 
 def clean_str(string):
+    string = unicodeToAscii(string)
     string = lower_string(string)
     string = expand_contradiction(string)
     string = clean_sp_char(string)
     return string
+
+
+# Turn a Unicode string to plain ASCII, thanks to https://stackoverflow.com/a/518232/2809427
+def unicodeToAscii(string):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', string)
+        if unicodedata.category(c) != 'Mn'
+    )
 
 
 def stem_and_lemma(data):
@@ -178,9 +188,22 @@ contractions_dict = {
     "i'm": "i am",
 }
 
-
+'''
 def clean_sp_char(string):
     return re.sub(r"[^A-Za-z]", " ", string)
+'''
+
+
+def clean_sp_char(string):
+    string = re.sub(r"\[([^\]]+)\]", " ", string)
+    string = re.sub(r"\(([^\)]+)\)", " ", string)
+    string = re.sub(r"[^A-Za-z0-9,!?.;]", " ", string)
+    string = re.sub(r",", " , ", string)
+    string = re.sub(r"!", " ! ", string)
+    string = re.sub(r"\?", " ? ", string)
+    string = re.sub(r";", " ; ", string)
+    string = re.sub(r"\s{2,}", " ", string)
+    return string
 
 
 def count_time_start():
