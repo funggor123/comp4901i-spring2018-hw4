@@ -38,7 +38,7 @@
 
 \subsection{Preprocessing}
 
-In the data clearning part, we first turn all the unicode string into ASCII and lower case. Then, we expand the contradiction and remove all the characters except (A-Za-z0-9,!?;). Finally, the preprcessed data are tokenized by the white space. 
+In the data clearning part, we first turn all the unicode string into \textbf{ASCII} and \textbf{lower case}. Then, we \textbf{expand the contradiction} and \textbf{remove all the characters except (A-Za-z0-9,!?;)}. Finally, the preprcessed data are tokenized by the \textbf{white space}. 
 
 \subsection{Data Statistics}
 The following are the data statistics.
@@ -86,7 +86,7 @@ The following are the hyperparameters tuning results.
 	\end{tabular}
 \end{table}
 
-Best Parameters obtained = (Learning rate: 0.0001, Number Hidden Layer: 2, Hidden Dimension Size: 512)
+Best Parameters obtained = (Learning rate: 0.0001, Number Hidden Layer: 2, Hidden Dimension Size: 512) with perplexity ($201.6539$)
 
 We use the model with the best Hyperparameters and obtain the following test perplexity.
 
@@ -108,6 +108,10 @@ We use the model with the best Hyperparameters and obtain the following test per
 
 \subsection{Discuss of Parameters Tuning Reults}
 
+We found out that for \textbf{smaller learning rate}, the best validation \textbf{perplexity is higher} but converge slower. This may because high learning rate whcih means a larger step size may cause the gradient descent overshot the optimal easier which trigger the early stopping earlier. On the other hand, low learning rate which means a smaller step size getting less chance to overshot the optimal.  
+
+For the number of hidden layer and hidden dimension size. We found out that with \textbf{more number of hidden layer and higher hidden dimension size}, \textbf{the validation perplexity is higher}. This may because deeper and wider network can be fruitful for difficult and abstract problem such as language generation.
+
 \subsection{Train with Pretrained Word embeddings}
 For Pretrained Word Embedding, we have tried to replace the original word embedding layer by the pretrained \textbf{word2Vector} with \textbf{Google News corpus} (3 billion running words) word vector model. (Google News Corpus: https://github.com/mmihaltz/word2vec-GoogleNews-vectors). And since the dimension of the embedding matrix is enormously big which cause some memory error during training, we have limited to only use ten thousands of vocabs. All above process can be easily done through by a python libarary named \textbf{gensim}. And the following are the results of using pretrained embedding. \textbf{(This part are implemented in the files with postfix \_embedding.py)}
 
@@ -127,6 +131,7 @@ We train the model with pretrained word embedding with the best hyperarameters a
 	\end{tabular}
 \end{table}
 
+From the test Results with Pretrained word Embedding, we found out that the language model with pretrained word embeddings give \textbf{better results (lower perplexity)}.
 
 \subsection{Language Generation}
 The following are the short paragraph generated from our models using the folloing words as starting.
@@ -136,6 +141,8 @@ The following are the short paragraph generated from our models using the folloi
 \paragraph{Start from "What"}
 
 \paragraph{Start from "Anyway"}
+
+\pagebreak
 
 \section{Bonus}
 
