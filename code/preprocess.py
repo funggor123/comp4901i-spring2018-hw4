@@ -217,7 +217,7 @@ def count_time_end(start_time, task_str):
     print(elapsed_time, "seconds " + task_str)
 
 
-sample = 20
+sample = -1
 
 
 def preprocess(input_file, windows=200, test=False):
