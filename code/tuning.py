@@ -14,7 +14,7 @@ class Struct:
 def start_tuning():
     lr = 0.0001
     dim_size = [128, 256, 512]
-    num_layers = [2]
+    num_layers = [1, 2]
 
     args = {
         'lr': lr,
