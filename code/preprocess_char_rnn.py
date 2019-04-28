@@ -194,6 +194,7 @@ def clean_sp_char(string):
     string = re.sub(r"\[([^\]]+)\]", " ", string)
     string = re.sub(r"\(([^\)]+)\)", " ", string)
     string = re.sub(r"[^A-Za-z0-9,!?.;]", " ", string)
+    string = re.sub(r"\.", " . ", string)
     string = re.sub(r",", " , ", string)
     string = re.sub(r"!", " ! ", string)
     string = re.sub(r"\?", " ? ", string)

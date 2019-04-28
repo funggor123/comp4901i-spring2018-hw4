@@ -198,6 +198,7 @@ def clean_sp_char(string):
     string = re.sub(r"\[([^\]]+)\]", " ", string)
     string = re.sub(r"\(([^\)]+)\)", " ", string)
     string = re.sub(r"[^A-Za-z0-9,!?.;]", " ", string)
+    string = re.sub(r"\.", " . ", string)
     string = re.sub(r",", " , ", string)
     string = re.sub(r"!", " ! ", string)
     string = re.sub(r"\?", " ? ", string)
@@ -216,7 +217,7 @@ def count_time_end(start_time, task_str):
     print(elapsed_time, "seconds " + task_str)
 
 
-sample = -1
+sample = 20
 
 
 def preprocess(input_file, windows=200, test=False):
@@ -251,3 +252,6 @@ def preprocess(input_file, windows=200, test=False):
         else:
             assert len(x) == len(y)
             return x, y
+
+train_data_sent_in, train_data_sent_out = preprocess("dataset/micro/train.txt", windows=10)
+print(train_data_sent_in[0])

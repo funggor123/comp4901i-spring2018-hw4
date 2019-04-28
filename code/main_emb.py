@@ -5,11 +5,10 @@ from tqdm import tqdm
 import torch
 import torch.nn as nn
 from pretrain_embedding import get_dataloaders
-from sklearn.metrics import classification_report, accuracy_score
 import tuning
-
-#from tuning import tuning
 from RNN_emb import RNNLM
+
+
 def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=10, early_stop=3, scheduler=None):
     best_perplexity = 9999999999
     for e in range(epoch):
