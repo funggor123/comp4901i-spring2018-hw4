@@ -75,7 +75,7 @@ def predict(model, vocab, start_vocab):
             input = input.cuda()
         output, hidden = model(input, hidden)
         word_id = torch.multinomial(torch.nn.Softmax(dim=0)(output), num_samples=1).item()
-    # print(words)
+    print(words)
 
 
 def main():
@@ -108,11 +108,13 @@ def main():
     model, best_perp = trainer(train_loader, dev_loader, model, optimizer, criterion, early_stop=args.early_stop)
 
     print('best_dev_perp:{}'.format(best_perp))
-    predict(model, vocab, clean_str("The"))
+    predict(model, vocab, clean_str("I"))
+    predict(model, vocab, clean_str("What"))
+    predict(model, vocab, clean_str("Anyway"))
 
 
 if __name__ == "__main__":
-    tune = True
+    tune = False
     if tune:
         tuning.start_tuning()
     else:
