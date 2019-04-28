@@ -15,7 +15,7 @@ from RNN import RNNLM
 use_gpu = torch.cuda.is_available()
 
 
-def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=20, early_stop=5, scheduler=None):
+def trainer(train_loader, dev_loader, model, optimizer, criterion, epoch=10, early_stop=5, scheduler=None):
     best_perp = 9999999
     for e in range(epoch):
         loss_log = []
