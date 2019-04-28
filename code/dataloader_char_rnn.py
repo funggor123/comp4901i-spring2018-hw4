@@ -36,7 +36,7 @@ def get_dataloaders(batch_size, window_size):
     vocab = getVocab()
     train_data_sent_in, train_data_sent_out = preprocess("dataset/micro/train.txt", windows=window_size)
     dev_data_sent_in, dev_data_sent_out = preprocess("dataset/micro/valid.txt", windows=window_size)
-    test_data_sent_in, test_data_sent_out = preprocess("dataset/micro/test.txt", test=True, windows=window_size)
+    test_data_sent_in, test_data_sent_out = preprocess("dataset/micro/test.txt", windows=window_size)
     train = Dataset(train_data_sent_in, train_data_sent_out, vocab)
     dev = Dataset(dev_data_sent_in, dev_data_sent_out, vocab)
     test = Dataset(test_data_sent_in, test_data_sent_out, vocab)

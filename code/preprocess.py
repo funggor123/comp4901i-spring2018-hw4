@@ -193,6 +193,9 @@ def count_time_end(start_time, task_str):
     print(elapsed_time, "seconds " + task_str)
 
 
+sample = -1
+
+
 def preprocess(input_file, windows=200, test=False):
     x = []
     y = []
@@ -215,6 +218,9 @@ def preprocess(input_file, windows=200, test=False):
                 x += [["<Start>"] + batch]
                 y += [batch + ["<End>"]]
                 batch = []
+                if sample != -1:
+                    if len(x) > sample:
+                        break
             batch += [word]
         count_time_end(start_time, "Add Sequence")
         if test:
@@ -222,5 +228,3 @@ def preprocess(input_file, windows=200, test=False):
         else:
             assert len(x) == len(y)
             return x, y
-
-
