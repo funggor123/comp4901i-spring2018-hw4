@@ -64,6 +64,7 @@ def Lang(vocabs, windows, amount_stay=50):
     statistic['frequent_word'] = sorted(vocabs.word2count.items(), key=
     lambda kv: (kv[1], kv[0]), reverse=True)[0:10]
 
+    # Keep top [amount_stay] vocabs
     if amount_stay != -1:
         word2count = set(
             OrderedDict(sorted(vocabs.word2count.items(), key=lambda kv: kv[1], reverse=True)[:amount_stay]))
